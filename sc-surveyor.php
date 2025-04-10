@@ -2,7 +2,7 @@
 /*
 Plugin Name: Shotcode Surveyor - Shortcode Usage Viewer
 Description: View all shortcodes used across your site.
-Version: 2.0
+Version: 2.1
 Author: https://github.com/codelyfe/Shortcode-Surveyor
 */
 
