@@ -10,10 +10,10 @@ add_action('admin_menu', function () {
     add_menu_page('Shortcode Viewer', 'Shortcode Viewer', 'manage_options', 'shortcode-usage-viewer', 'suv_admin_page');
 });
 
-add_action('admin_enqueue_scripts', function () {
-    wp_enqueue_style('suv-css', plugin_dir_url(__FILE__) . 'suv.css');
-    wp_enqueue_script('suv-js', plugin_dir_url(__FILE__) . 'suv.js', ['jquery'], null, true);
-});
+//add_action('admin_enqueue_scripts', function () {
+//    wp_enqueue_style('suv-css', plugin_dir_url(__FILE__) . 'suv.css');
+//    wp_enqueue_script('suv-js', plugin_dir_url(__FILE__) . 'suv.js', ['jquery'], null, true);
+//});
 
 function suv_admin_page() {
     echo '<div class="wrap"><h1>Shotcode Surveyor - Shortcode Usage Viewer</h1>';
