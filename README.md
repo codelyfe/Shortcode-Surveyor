@@ -1,7 +1,7 @@
 # Shortcode-Surveyor
 
 === Shortcode Surveyor - Shortcode Usage Viewer ===
-Contributors: yourname  
+Contributors: Randal Burger 
 Tags: shortcode, shortcode viewer, shortcode usage, content tools, shortcode manager  
 Requires at least: 5.0  
 Tested up to: 6.5  
