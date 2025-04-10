@@ -2,7 +2,7 @@
 /*
 Plugin Name: Shotcode Surveyor - Shortcode Usage Viewer
 Description: View all shortcodes used across your site.
-Version: 2.1
+Version: 2.2
 Author: https://github.com/codelyfe/Shortcode-Surveyor
 */
 
@@ -10,14 +10,62 @@ add_action('admin_menu', function () {
     add_menu_page('Shortcode Viewer', 'Shortcode Viewer', 'manage_options', 'shortcode-usage-viewer', 'suv_admin_page');
 });
 
-//add_action('admin_enqueue_scripts', function () {
-//    wp_enqueue_style('suv-css', plugin_dir_url(__FILE__) . 'suv.css');
-//    wp_enqueue_script('suv-js', plugin_dir_url(__FILE__) . 'suv.js', ['jquery'], null, true);
-//});
+add_action('wp_ajax_suv_update_param', function () {
+    $post_id = intval($_POST['post_id']);
+    $old = sanitize_text_field($_POST['old']);
+    $key = sanitize_text_field($_POST['key']);
+    $val = sanitize_text_field($_POST['val']);
+
+    $post = get_post($post_id);
+    if (!$post) wp_send_json_error('Post not found');
+
+    $content = $post->post_content;
+    $pattern = '/(\[' . preg_quote($old) . '[^\]]*\b' . preg_quote($key) . '=")[^"]*(")/';
+    $new_content = preg_replace($pattern, '${1}' . $val . '${2}', $content, 1);
+
+    if ($new_content === null) wp_send_json_error('Regex error');
+
+    $result = wp_update_post(['ID' => $post_id, 'post_content' => $new_content]);
+    if (is_wp_error($result)) {
+        wp_send_json_error('Update failed');
+    }
+
+    wp_send_json_success('Updated');
+});
+
+add_action('admin_footer', function () {
+    ?>
+    <script>
+    jQuery(document).on('click', '.suv-save-param', function () {
+        var $row = jQuery(this).closest('li');
+        var post_id = $row.data('post');
+        var old = $row.data('shortcode');
+        var key = $row.find('input.param-key').val();
+        var val = $row.find('input.param-val').val();
+
+        jQuery.post(ajaxurl, {
+            action: 'suv_update_param',
+            post_id: post_id,
+            old: old,
+            key: key,
+            val: val
+        }, function (res) {
+            console.log(res);
+            if (res.success) {
+                alert('Saved!');
+            } else {
+                alert('Error: ' + res.data);
+            }
+        });
+    });
+    </script>
+    <?php
+});
 
 function suv_admin_page() {
     echo '<div class="wrap"><h1>Shotcode Surveyor - Shortcode Usage Viewer</h1>';
     echo '<label><input type="checkbox" id="toggle-params" /> Show Parameters</label>';
+    echo '<script>var ajaxurl = "' . admin_url('admin-ajax.php') . '";</script>';
     suv_tabs();
     echo '</div><script>jQuery(function($){$("#toggle-params").on("change",function(){$(".sc-params").toggle(this.checked);}).change();});</script>';
 }
@@ -87,7 +135,12 @@ function suv_tab_usage() {
                 if (!empty($info['params'][0])) {
                     echo '<ul class="sc-params" style="display:none;">';
                     foreach ($info['params'][0] as $key => $val) {
-                        echo "<li>$key = $val</li>";
+                        echo "<li data-post='{$info['id']}' data-shortcode='$sc'>
+                                <input class='param-key' value='" . esc_attr($key) . "' />
+                                = 
+                                <input class='param-val' value='" . esc_attr($val) . "' />
+                                <button class='suv-save-param button button-small'>Save</button>
+                              </li>";
                     }
                     echo '</ul>';
                 }
