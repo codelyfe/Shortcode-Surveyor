@@ -51,10 +51,6 @@ Yes, though for very large sites with thousands of posts, the initial scan may t
 = 1.0 =
 * Initial release: basic shortcode count and usage display
 
-== Upgrade Notice ==
-
-2.0 includes many new features and a rebuilt interface. Backup your content before using bulk actions.
-
 == License ==
 
 This plugin is licensed under the GPLv2 or later.  
