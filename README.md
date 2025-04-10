@@ -1,4 +1,5 @@
 # Shortcode Surveyor - Shortcode Usage Viewer
+## WordPress Plugin
 Contributors: Randal Burger 
 Tags: shortcode, shortcode viewer, shortcode usage, content tools, shortcode manager  
 Requires at least: 5.0  
