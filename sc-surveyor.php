@@ -16,7 +16,7 @@ add_action('admin_enqueue_scripts', function () {
 });
 
 function suv_admin_page() {
-    echo '<div class="wrap"><h1>Shortcode Usage Viewer Pro</h1>';
+    echo '<div class="wrap"><h1>Shotcode Surveyor - Shortcode Usage Viewer</h1>';
     echo '<label><input type="checkbox" id="toggle-params" /> Show Parameters</label>';
     suv_tabs();
     echo '</div><script>jQuery(function($){$("#toggle-params").on("change",function(){$(".sc-params").toggle(this.checked);}).change();});</script>';
