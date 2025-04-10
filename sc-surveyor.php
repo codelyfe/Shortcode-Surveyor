@@ -17,26 +17,21 @@ add_action('admin_enqueue_scripts', function () {
 
 function suv_admin_page() {
     echo '<div class="wrap"><h1>Shortcode Usage Viewer Pro</h1>';
+    echo '<label><input type="checkbox" id="toggle-params" /> Show Parameters</label>';
     suv_tabs();
-    echo '</div>';
+    echo '</div><script>jQuery(function($){$("#toggle-params").on("change",function(){$(".sc-params").toggle(this.checked);}).change();});</script>';
 }
 
 function suv_tabs() {
-    $tabs = [
-        'usage' => 'Shortcode Usage'
-  
-    ];
-
+    $tabs = ['usage' => 'Shortcode Usage'];
     echo '<h2 class="nav-tab-wrapper">';
     foreach ($tabs as $key => $label) {
         $active = (!isset($_GET['tab']) && $key === 'usage') || (isset($_GET['tab']) && $_GET['tab'] === $key);
         echo '<a class="nav-tab ' . ($active ? 'nav-tab-active' : '') . '" href="?page=shortcode-usage-viewer&tab=' . $key . '">' . $label . '</a>';
     }
     echo '</h2><div style="margin-top: 20px;">';
-
     $active_tab = $_GET['tab'] ?? 'usage';
     call_user_func("suv_tab_$active_tab");
-
     echo '</div>';
 }
 
@@ -49,7 +44,6 @@ function get_all_posts() {
     return get_posts(['post_type' => 'any', 'numberposts' => -1, 'post_status' => 'any']);
 }
 
-// -------- TAB: USAGE -------- //
 function suv_tab_usage() {
     $shortcodes = get_all_shortcodes();
     $posts = get_all_posts();
@@ -91,9 +85,9 @@ function suv_tab_usage() {
                 $modified = $info['modified'];
                 echo "<li><a href='$edit' target='_blank'>$title</a> ($type) – {$info['count']} time(s), last modified: $modified";
                 if (!empty($info['params'][0])) {
-                    echo '<ul>';
+                    echo '<ul class="sc-params" style="display:none;">';
                     foreach ($info['params'][0] as $key => $val) {
-                        //echo "<li>$key = $val</li>";
+                        echo "<li>$key = $val</li>";
                     }
                     echo '</ul>';
                 }
