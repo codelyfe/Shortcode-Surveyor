@@ -11,7 +11,7 @@ Easily view, manage, test, and replace all shortcodes used throughout your WordP
 
 == Description ==
 
-**Shortcode Usage Viewer Pro** is the ultimate tool for WordPress administrators to audit and manage shortcode usage site-wide.
+**Shortcode Surveyor - Shortcode Usage Viewer** is the ultimate tool for WordPress administrators to audit shortcode usage site-wide.
 
 This plugin scans every post, page, and custom post type for shortcode usage and provides:
 
