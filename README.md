@@ -4,7 +4,7 @@ Contributors: Randal Burger
 Tags: shortcode, shortcode viewer, shortcode usage, content tools, shortcode manager  
 Requires at least: 5.0  
 Tested up to: 6.7  
-Stable tag: 2.0  
+Stable tag: 2.2  
 License: GPLv2 or later  
 License URI: https://www.gnu.org/licenses/gpl-2.0.html  
 
@@ -20,6 +20,7 @@ This plugin scans every post, page, and custom post type for shortcode usage and
 ✅ Count of how many times each shortcode is used  
 ✅ List of pages/posts using each shortcode   
 ✅ Post type, last modified info, and shortcode parameter display  
+✅ View / Edit Parameters using Ajax 
 
 It's designed for developers, agencies, and power users who need to optimize or migrate content using shortcodes.
 
