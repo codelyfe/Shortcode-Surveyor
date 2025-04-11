@@ -2,7 +2,7 @@
 /*
 Plugin Name: Shotcode Surveyor - Shortcode Usage Viewer
 Description: View all shortcodes used across your site.
-Version: 2.2
+Version: 2.3
 Author: https://github.com/codelyfe/Shortcode-Surveyor
 */
 
@@ -33,6 +33,27 @@ add_action('wp_ajax_suv_update_param', function () {
     wp_send_json_success('Updated');
 });
 
+add_action('wp_ajax_suv_update_shortcode_name', function () {
+    $post_id = intval($_POST['post_id']);
+    $old = sanitize_text_field($_POST['old']);
+    $new = sanitize_text_field($_POST['new']);
+
+    $post = get_post($post_id);
+    if (!$post) wp_send_json_error('Post not found');
+
+    $pattern = '/\[' . preg_quote($old, '/') . '\b/';
+    $new_content = preg_replace($pattern, '[' . $new, $post->post_content, 1);
+
+    if ($new_content === null) wp_send_json_error('Regex error');
+
+    $result = wp_update_post(['ID' => $post_id, 'post_content' => $new_content]);
+    if (is_wp_error($result)) {
+        wp_send_json_error('Update failed');
+    }
+
+    wp_send_json_success('Shortcode name updated');
+});
+
 add_action('admin_footer', function () {
     ?>
     <script>
@@ -53,6 +74,27 @@ add_action('admin_footer', function () {
             console.log(res);
             if (res.success) {
                 alert('Saved!');
+            } else {
+                alert('Error: ' + res.data);
+            }
+        });
+    });
+
+    jQuery(document).on('click', '.suv-save-name', function () {
+        var $row = jQuery(this).closest('li');
+        var post_id = $row.data('post');
+        var old = $row.data('shortcode');
+        var newname = $row.find('input.shortcode-new').val();
+
+        jQuery.post(ajaxurl, {
+            action: 'suv_update_shortcode_name',
+            post_id: post_id,
+            old: old,
+            new: newname
+        }, function (res) {
+            console.log(res);
+            if (res.success) {
+                alert('Shortcode name updated!');
             } else {
                 alert('Error: ' + res.data);
             }
@@ -132,6 +174,11 @@ function suv_tab_usage() {
                 $type = $info['type'];
                 $modified = $info['modified'];
                 echo "<li><a href='$edit' target='_blank'>$title</a> ($type) – {$info['count']} time(s), last modified: $modified";
+                echo "<ul><li data-post='{$info['id']}' data-shortcode='$sc'>
+                        Rename shortcode:
+                        <input class='shortcode-new' value='" . esc_attr($sc) . "' />
+                        <button class='suv-save-name button button-small'>Rename</button>
+                      </li></ul>";
                 if (!empty($info['params'][0])) {
                     echo '<ul class="sc-params" style="display:none;">';
                     foreach ($info['params'][0] as $key => $val) {
@@ -151,3 +198,4 @@ function suv_tab_usage() {
     }
     echo '</tbody></table>';
 }
+
